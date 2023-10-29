@@ -9,11 +9,12 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 export class AppComponent implements OnInit {
   genders = ['male', 'female'];
   signupForm: FormGroup;
+  forbiddenUsernames = ['Chris', 'Ana'];
 
   ngOnInit() {
     this.signupForm = new FormGroup({
       'userData': new FormGroup({
-        'username': new FormControl(null, Validators.required),
+        'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
         'email': new FormControl(null, [Validators.required, Validators.email])
       }),
       'gender': new FormControl('female'),
@@ -37,4 +38,11 @@ export class AppComponent implements OnInit {
   // get controls() {
   //   return (this.signupForm.get('hobbies') as FormArray).controls;
   // } alternatively can set up a getter and use this alternate type casting syntax and then in the html template do *ngFor="let hobbyControl of controls; let i = index"
+
+  forbiddenNames(control: FormControl): {[s: string]: boolean} {
+    if (this.forbiddenUsernames.indexOf(control.value)) {
+      return { 'nameIsForbidden': true};
+    }
+    return null;
+  }
 }
